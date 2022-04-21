@@ -6,14 +6,15 @@ const BUTTON_TYPE_CLASSES = {
   inverted: "inverted",
 };
 
-function Button(props) {
+function Button({ children, buttonType, ...restProps }) {
   return (
     <button
+      {...restProps}
       className={`${styles["button-container"]} ${
-        styles[BUTTON_TYPE_CLASSES[props.buttonType]]
+        styles[BUTTON_TYPE_CLASSES[buttonType]]
       }`}
     >
-      {props.children}
+      {children}
     </button>
   );
 }
