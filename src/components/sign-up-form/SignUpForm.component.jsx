@@ -39,6 +39,7 @@ function SignUpForm() {
         password
       );
       await createUserDocumenFromAuth(response.user, { displayName });
+
       setFormFields(defaultFormFields);
     } catch (e) {
       if (e.code === "auth/email-already-in-use") {

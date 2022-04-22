@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   createUserDocumenFromAuth,
   signInWithEmailAndPw,
@@ -25,8 +26,7 @@ function SignInForm() {
   }
 
   async function onGoogleSubmit() {
-    const response = await signInWithGooglePopup();
-    const userDocRef = await createUserDocumenFromAuth(response.user);
+    await signInWithGooglePopup();
   }
 
   async function onFormSubmit(e) {
