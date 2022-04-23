@@ -19,21 +19,42 @@ function addCartItem(cartItems, productToAdd) {
   return [...cartItems, { ...productToAdd, quantity: 1 }];
 }
 
+function removeCartQuantityItem(cartItems, productToRemove) {
+  const currentItem = cartItems.find((item) => item.id === productToRemove.id);
+
+  if (currentItem.quantity > 1) {
+    return cartItems.map((item) =>
+      item.id === productToRemove.id
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
+    );
+  } else {
+    return cartItems.filter((item) => item.id !== productToRemove.id);
+  }
+}
+
+function removeItem(cartItems, productToRemove) {
+  return cartItems.filter((item) => item.id !== productToRemove.id);
+}
+
 export const CartContext = createContext({
   showCart: false,
   cartItems: [],
   toggleCart: () => {},
   addItemToCart: () => {},
+  removeItemQuantityFromCart: () => {},
+  removeItemFromCart: () => {},
   cartCount: 0,
+  priceTotal: 0,
 });
 
 export function CartContextProvider(props) {
   const [showCart, setCart] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [cartCount, setCartCount] = useState(0);
+  const [priceTotal, setPriceTotal] = useState(0);
 
   useEffect(() => {
-    console.log(" useEffect in cart COntext");
     const totalItems = cartItems.reduce(
       (prevVal, currentVal) => prevVal + Number(currentVal.quantity),
       0
@@ -41,8 +62,24 @@ export function CartContextProvider(props) {
     setCartCount(totalItems);
   }, [cartItems]);
 
+  useEffect(() => {
+    const totalPrice = cartItems.reduce(
+      (total, value) => value.quantity * value.price + total,
+      0
+    );
+    setPriceTotal(totalPrice);
+  }, [cartItems]);
+
   function addItemToCart(product) {
     setCartItems(addCartItem(cartItems, product));
+  }
+
+  function removeItemQuantityFromCart(product) {
+    setCartItems(removeCartQuantityItem(cartItems, product));
+  }
+
+  function removeItemFromCart(product) {
+    setCartItems(removeItem(cartItems, product));
   }
 
   function toggleCart() {
@@ -52,9 +89,12 @@ export function CartContextProvider(props) {
   const value = {
     showCart,
     cartItems,
+    priceTotal,
     cartCount,
     toggleCart,
     addItemToCart,
+    removeItemQuantityFromCart,
+    removeItemFromCart,
   };
   return (
     <CartContext.Provider value={value}>{props.children}</CartContext.Provider>
