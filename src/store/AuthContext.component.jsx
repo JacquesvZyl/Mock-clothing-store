@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import {
   createUserDocumenFromAuth,
   onAuthStateChangeListener,
@@ -9,11 +9,34 @@ const UserContext = React.createContext({
   setCurrentUser: () => null,
 });
 
+function authReducer(state, action) {
+  const { payload, type } = action;
+  switch (type) {
+    case "SET_CURRENT_USER": {
+      return {
+        ...state,
+        currentUser: payload,
+      };
+    }
+    default:
+      throw new Error(`Unhandled type of ${type} in Auth Reducer`);
+  }
+}
+
+const INITIAL_STATE = {
+  currentUser: null,
+};
+
 export function UserContextProvider(props) {
-  const [currentUser, setCurrentUser] = useState(null);
+  //const [currentUser, setCurrentUser] = useState(null);
+  const [state, dispatch] = useReducer(authReducer, INITIAL_STATE);
+
+  function setCurrentUser(user) {
+    dispatch({ type: "SET_CURRENT_USER", payload: user });
+  }
 
   const authValue = {
-    currentUser,
+    currentUser: state.currentUser,
     setCurrentUser,
   };
 

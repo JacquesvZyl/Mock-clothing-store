@@ -6,7 +6,6 @@ import styles from "./ProductCard.module.scss";
 function ProductCard(props) {
   const { addItemToCart } = useContext(CartContext);
   const { name, imageUrl, price } = props.data;
-  console.log(props.data);
 
   function onClickHandler() {
     addItemToCart(props.data);
